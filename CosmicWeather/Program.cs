@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CosmicWeather.Database;
+using CosmicWeather.Model;
 
 namespace CosmicWeather
 {
@@ -10,6 +8,13 @@ namespace CosmicWeather
     {
         static void Main(string[] args)
         {
+            using (CosmicWeatherDbContext db = new CosmicWeatherDbContext())
+            {
+                Planet planetTest = new Planet();
+                planetTest.Name = "TESTING";
+                db.Planets.Add(planetTest);
+                db.SaveChanges();
+            }
         }
     }
 }

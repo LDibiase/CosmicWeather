@@ -49,12 +49,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\CosmicWeatherDbContext.cs" />
+    <Compile Include="Migrations\201807211640512_CreatePlanetsTable.cs" />
+    <Compile Include="Migrations\201807211640512_CreatePlanetsTable.Designer.cs">
+      <DependentUpon>201807211640512_CreatePlanetsTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Model\Planet.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201807211640512_CreatePlanetsTable.resx">
+      <DependentUpon>201807211640512_CreatePlanetsTable.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
