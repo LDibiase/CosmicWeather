@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmicWeather", "CosmicWeather\CosmicWeather.csproj", "{33B04486-4E7B-402D-9969-0DF5B56BE99B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmicWeatherAPI", "CosmicWeatherAPI\CosmicWeatherAPI.csproj", "{6FBFCE9C-58E2-4A5F-A0A5-58933B33E632}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{33B04486-4E7B-402D-9969-0DF5B56BE99B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33B04486-4E7B-402D-9969-0DF5B56BE99B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33B04486-4E7B-402D-9969-0DF5B56BE99B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FBFCE9C-58E2-4A5F-A0A5-58933B33E632}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FBFCE9C-58E2-4A5F-A0A5-58933B33E632}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FBFCE9C-58E2-4A5F-A0A5-58933B33E632}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FBFCE9C-58E2-4A5F-A0A5-58933B33E632}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
