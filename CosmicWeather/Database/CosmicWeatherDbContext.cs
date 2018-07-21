@@ -8,7 +8,6 @@ namespace CosmicWeather.Database
         public CosmicWeatherDbContext() : base("name=CosmicWeatherDbContext")
         {
         }
-
-        public virtual DbSet<Planet> Planets { get; set; }
+        public virtual DbSet<Weather> Weathers { get; set; }
     }
 }

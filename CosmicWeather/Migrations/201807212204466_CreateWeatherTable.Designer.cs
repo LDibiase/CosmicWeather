@@ -7,13 +7,13 @@ namespace CosmicWeather.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class CreatePlanetsTable : IMigrationMetadata
+    public sealed partial class CreateWeatherTable : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(CreatePlanetsTable));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(CreateWeatherTable));
         
         string IMigrationMetadata.Id
         {
-            get { return "201807211640512_CreatePlanetsTable"; }
+            get { return "201807212204466_CreateWeatherTable"; }
         }
         
         string IMigrationMetadata.Source

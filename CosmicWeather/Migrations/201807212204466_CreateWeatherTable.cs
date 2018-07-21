@@ -3,16 +3,17 @@ namespace CosmicWeather.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class CreatePlanetsTable : DbMigration
+    public partial class CreateWeatherTable : DbMigration
     {
         public override void Up()
         {
             CreateTable(
-                "dbo.Planets",
+                "dbo.Weathers",
                 c => new
                     {
                         ID = c.Int(nullable: false, identity: true),
-                        Name = c.String(maxLength: 50),
+                        WeatherType = c.Int(nullable: false),
+                        DayNumber = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.ID);
             
@@ -20,7 +21,7 @@ namespace CosmicWeather.Migrations
         
         public override void Down()
         {
-            DropTable("dbo.Planets");
+            DropTable("dbo.Weathers");
         }
     }
 }
