@@ -8,9 +8,10 @@ namespace CosmicWeather.Model
 {
     public enum WeatherEnum
     {
-        Lluvia = 1,
-        LluviaMaxima,
-        Sequia,
-        Optimo,
+        Drought = 1,
+        Optimum,
+        Rain,
+        MaxRain,
+        Normal //When weather isn't rain, isn't drought and isn't optimum weather either
     }
 }
