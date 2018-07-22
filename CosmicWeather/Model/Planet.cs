@@ -23,14 +23,19 @@ namespace CosmicWeather.Model
 
         #region Methods
 
-        //public CoordinatesHelper CurrentCoordinates(int day, int nFractionalDigits)
-        public CoordinatesHelper CurrentCoordinates(int day)
-
+        public CoordinatesHelper CurrentCoordinates(int day, int nFractionalDigits)
         {
             double angle = ((AngularSpeed * day) % Turn) * Math.PI / Pi;
 
-            //var y = Math.Round(Math.Sin(angle) * StarDistance, nFractionalDigits);
-            //var x = Math.Round(Math.Cos(angle) * StarDistance, nFractionalDigits);
+            var y = Math.Round(Math.Sin(angle) * StarDistance, nFractionalDigits);
+            var x = Math.Round(Math.Cos(angle) * StarDistance, nFractionalDigits);
+
+            return new CoordinatesHelper { PositionX = x, PositionY = y };
+        }
+
+        public CoordinatesHelper CurrentCoordinates(int day)
+        {
+            double angle = ((AngularSpeed * day) % Turn) * Math.PI / Pi;
 
             var y = Math.Sin(angle) * StarDistance;
             var x = Math.Cos(angle) * StarDistance;
