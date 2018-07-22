@@ -1,6 +1,6 @@
 ﻿namespace CosmicWeather.Model
 {
-    public class Weather
+    public class WeatherPeriod
     {
         #region Properties
 
@@ -9,7 +9,7 @@
 
         public WeatherEnum WeatherType { get; set; }
 
-        public int DayNumber { get; set; }
+        public int AmountPeriods { get; set; }
 
         #endregion
     }

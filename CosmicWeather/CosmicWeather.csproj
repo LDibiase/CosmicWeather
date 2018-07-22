@@ -62,6 +62,7 @@
     <Compile Include="Model\StarSystem.cs" />
     <Compile Include="Model\Weather.cs" />
     <Compile Include="Model\WeatherEnum.cs" />
+    <Compile Include="Model\WeatherPeriod.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
