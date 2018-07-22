@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using CosmicWeather.Database;
 using CosmicWeather.Model;
+using CosmicWeatherAPI.DTOs;
 
 namespace CosmicWeatherAPI.Controllers
 {
@@ -18,87 +16,32 @@ namespace CosmicWeatherAPI.Controllers
     {
         private CosmicWeatherDbContext db = new CosmicWeatherDbContext();
 
+        private static readonly Expression<Func<Weather, WeatherDto>> AsWeatherDto =
+            x => new WeatherDto
+            {
+                Dia = x.DayNumber,
+                Clima = x.WeatherType.ToString(),
+            };
+
+
         // GET: api/Weathers
-        public IQueryable<Weather> GetWeathers()
+        public IQueryable<WeatherDto> GetWeathers()
         {
-            return db.Weathers;
+            return db.Weathers.Select(AsWeatherDto);
         }
 
         // GET: api/Weathers/5
-        [ResponseType(typeof(Weather))]
-        public async Task<IHttpActionResult> GetWeather(int id)
+        [ResponseType(typeof(WeatherDto))]
+        public async Task<IHttpActionResult> GetWeather(int day)
         {
-            Weather weather = await db.Weathers.FindAsync(id);
+            WeatherDto weather = await db.Weathers
+                .Where(b => b.DayNumber == day)
+                .Select(AsWeatherDto)
+                .FirstOrDefaultAsync();
             if (weather == null)
             {
                 return NotFound();
             }
-
-            return Ok(weather);
-        }
-
-        // PUT: api/Weathers/5
-        [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutWeather(int id, Weather weather)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != weather.ID)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(weather).State = EntityState.Modified;
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!WeatherExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        // POST: api/Weathers
-        [ResponseType(typeof(Weather))]
-        public async Task<IHttpActionResult> PostWeather(Weather weather)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            db.Weathers.Add(weather);
-            await db.SaveChangesAsync();
-
-            return CreatedAtRoute("DefaultApi", new { id = weather.ID }, weather);
-        }
-
-        // DELETE: api/Weathers/5
-        [ResponseType(typeof(Weather))]
-        public async Task<IHttpActionResult> DeleteWeather(int id)
-        {
-            Weather weather = await db.Weathers.FindAsync(id);
-            if (weather == null)
-            {
-                return NotFound();
-            }
-
-            db.Weathers.Remove(weather);
-            await db.SaveChangesAsync();
 
             return Ok(weather);
         }
