@@ -9,10 +9,8 @@ namespace CosmicWeather.Model
 {
     public class StarSystem
     {
-        private int _nFractionalDigits; //Number of fractional digits to be used when performing calculations
         private static readonly CoordinatesHelper Star = new CoordinatesHelper { PositionX = 0, PositionY = 0 }; //Sun
-        private double _maxPerimeter;
-        private int _maxRainDay;
+        private static readonly MathHelper Math = new MathHelper(); //Math calculations helper
 
         #region Properties
 
@@ -24,51 +22,6 @@ namespace CosmicWeather.Model
 
         #region Methods
 
-        private double StraightLineSlope(CoordinatesHelper point1, CoordinatesHelper point2, int nFractionalDigits)
-        {
-            //Straight line slope
-            return Math.Round((point2.PositionY - point1.PositionY) / (point2.PositionX - point1.PositionX), nFractionalDigits);
-        }
-
-        private bool AreCoordinatesAligned(List<CoordinatesHelper> coordinates)
-        {
-            //if (coordinates.Count <= 1) //True if the list is empty
-            //    return true;
-
-            //double slope = StraightLineSlope(coordinates[0], coordinates[1], _nFractionalDigits);
-
-            //for (int i = 2; i < coordinates.Count; i++)
-            //{
-            //    if (slope != StraightLineSlope(coordinates[i - 1], coordinates[i], _nFractionalDigits))
-            //        return false;
-            //}
-
-            //return true;
-
-            //The slope of the straight line drawn by Poin1 and Point2 must match with the slope of the straight line drawn by Point2 and Point3
-            return StraightLineSlope(coordinates[0], coordinates[1], _nFractionalDigits) == StraightLineSlope(coordinates[1], coordinates[2], _nFractionalDigits);
-        }
-
-        private bool PositiveOrientation(CoordinatesHelper point1, CoordinatesHelper point2, CoordinatesHelper point3)
-        {
-            //Triangle Point1Point2Point3 orientation
-            return ((point1.PositionX - point3.PositionX) * (point2.PositionY - point3.PositionY)) -
-                   ((point1.PositionY - point3.PositionY) * (point2.PositionX - point3.PositionX)) >= 0;
-        }
-
-        private double Distance(CoordinatesHelper point1, CoordinatesHelper point2)
-        {
-            //Distance between two points
-            return Math.Sqrt(Math.Pow(point1.PositionX - point2.PositionX, 2) +
-                             Math.Pow(point1.PositionY - point2.PositionY, 2));
-        }
-
-        private double Perimeter(CoordinatesHelper point1, CoordinatesHelper point2, CoordinatesHelper point3)
-        {
-            //Triangle Point1Point2Point3 perimeter
-            return Distance(point1, point2) + Distance(point2, point3) + Distance(point3, point1);
-        }
-
         private bool IsDrought(List<CoordinatesHelper> coordinates)
         {
             List<CoordinatesHelper> coordinatesAux = new List<CoordinatesHelper>(coordinates)
@@ -77,32 +30,51 @@ namespace CosmicWeather.Model
                 Star
             };
 
-            return AreCoordinatesAligned(coordinatesAux);
+            return Math.AreCoordinatesAligned(coordinatesAux);
+        }
+
+        private bool IsDrought(List<CoordinatesHelper> coordinates, int nFractionalDigits)
+        {
+            List<CoordinatesHelper> coordinatesAux = new List<CoordinatesHelper>(coordinates)
+            {
+                //Planets and sun must be aligned
+                Star
+            };
+
+            return Math.AreCoordinatesAligned(coordinatesAux, nFractionalDigits);
         }
 
         private bool IsOptimum(List<CoordinatesHelper> coordinates)
         {
             //Planets must be aligned
-            return AreCoordinatesAligned(coordinates);
+            return Math.AreCoordinatesAligned(coordinates);
+        }
+
+        private bool IsOptimum(List<CoordinatesHelper> coordinates, int nFractionalDigits)
+        {
+            //Planets must be aligned
+            return Math.AreCoordinatesAligned(coordinates, nFractionalDigits);
         }
 
         private bool IsRain(List<CoordinatesHelper> coordinates)
         {
-            CoordinatesHelper point1 = coordinates[0];
-            CoordinatesHelper point2 = coordinates[1];
-            CoordinatesHelper point3 = coordinates[2];
+            if (coordinates.Count > 3) //Method should throw an exception as the analyzed figure wouldn't be a triangle
+            {
+                return false;
+            }
 
-            //All triangles (P1P2P3, P1P2S, P1P3S and P3P1S) orientations must match
-            return PositiveOrientation(point1, point2, point3) == PositiveOrientation(point1, point2, Star) ==
-                   PositiveOrientation(point1, point3, Star) == PositiveOrientation(point3, point1, Star);
+            //The orientation of all the triangles drawn by each different combination between point1, point2, point3 and the star (P1P2P3, P1P2S, P1P3S and P3P1S) must match
+            return Math.PositiveOrientation(coordinates[0], coordinates[1], coordinates[2]) ==
+                   Math.PositiveOrientation(coordinates[0], coordinates[1], Star) ==
+                   Math.PositiveOrientation(coordinates[0], coordinates[2], Star) ==
+                   Math.PositiveOrientation(coordinates[2], coordinates[0], Star);
         }
 
-        private Weather GetWeather(int day)
+        private Weather GetWeather(int day, ref double maxPerimeter, ref int maxRainDay)
         {
             List<CoordinatesHelper> coordinates = new List<CoordinatesHelper>();
 
             //Get coordinates list
-            //Planets.ForEach(planet => coordinates.Add(planet.CurrentCoordinates(day, _nFractionalDigits)));
             Planets.ForEach(planet => coordinates.Add(planet.CurrentCoordinates(day)));
 
             if (IsDrought(coordinates))
@@ -111,12 +83,12 @@ namespace CosmicWeather.Model
                 return new Weather { DayNumber = day, WeatherType = WeatherEnum.Optimum };
             if (IsRain(coordinates))
             {
-                double perimeter = Perimeter(coordinates[0], coordinates[1], coordinates[2]);
+                double perimeter = Math.Perimeter(coordinates[0], coordinates[1], coordinates[2]);
 
-                if (perimeter > _maxPerimeter)
+                if (perimeter > maxPerimeter)
                 {
-                    _maxPerimeter = perimeter;
-                    _maxRainDay = day;
+                    maxPerimeter = perimeter;
+                    maxRainDay = day;
                 }
 
                 return new Weather {DayNumber = day, WeatherType = WeatherEnum.Rain};
@@ -125,20 +97,46 @@ namespace CosmicWeather.Model
             return new Weather { DayNumber = day, WeatherType = WeatherEnum.Normal };
         }
 
-        private void SetMaxRain(List<Weather> weatherList)
+        private Weather GetWeather(int day, ref double maxPerimeter, ref int maxRainDay, int nFractionalDigits)
+        {
+            List<CoordinatesHelper> coordinates = new List<CoordinatesHelper>();
+
+            //Get coordinates list
+            Planets.ForEach(planet => coordinates.Add(planet.CurrentCoordinates(day, nFractionalDigits)));
+
+            if (IsDrought(coordinates, nFractionalDigits))
+                return new Weather { DayNumber = day, WeatherType = WeatherEnum.Drought };
+            if (IsOptimum(coordinates, nFractionalDigits))
+                return new Weather { DayNumber = day, WeatherType = WeatherEnum.Optimum };
+            if (IsRain(coordinates))
+            {
+                double perimeter = Math.Perimeter(coordinates[0], coordinates[1], coordinates[2]);
+
+                if (perimeter > maxPerimeter)
+                {
+                    maxPerimeter = perimeter;
+                    maxRainDay = day;
+                }
+
+                return new Weather { DayNumber = day, WeatherType = WeatherEnum.Rain };
+            }
+
+            return new Weather { DayNumber = day, WeatherType = WeatherEnum.Normal };
+        }
+
+        private void SetMaxRain(List<Weather> weatherList, int maxRainDay)
         {
             //Get maximum rain day
-            Weather maxRain = weatherList.Find(weather => weather.DayNumber.Equals(_maxRainDay));
+            Weather maxRain = weatherList.Find(weather => weather.DayNumber == maxRainDay);
 
             //Update weather type
             maxRain.WeatherType = WeatherEnum.MaxRain;
         }
 
-        public List<Weather> GetWeatherForXDays(int days, int nFractionalDigits)
+        public List<Weather> GetWeatherForXDays(int days)
         {
-            _nFractionalDigits = nFractionalDigits; //Number of fractional digits to be used when performing calculations
-            _maxPerimeter = 0.0;
-            _maxRainDay = -1;
+            double maxPerimeter = 0.0; //Maximum perimeter
+            int maxRainDay = -1; //Day of maximum rain
 
             List<Weather> weatherList = new List<Weather>();
 
@@ -147,10 +145,30 @@ namespace CosmicWeather.Model
 
             for (int day = 1; day <= days; day++)
             {
-                weatherList.Add(GetWeather(day));
+                weatherList.Add(GetWeather(day, ref maxPerimeter, ref maxRainDay));
             }
 
-            SetMaxRain(weatherList);
+            SetMaxRain(weatherList, maxRainDay);
+
+            return weatherList;
+        }
+
+        public List<Weather> GetWeatherForXDays(int days, int nFractionalDigits)
+        {
+            double maxPerimeter = 0.0; //Maximum perimeter
+            int maxRainDay = -1; //Day of maximum rain
+
+            List<Weather> weatherList = new List<Weather>();
+
+            //Sort planets by distance to star in descending order
+            Planets.Sort((planet1, planet2) => planet2.StarDistance.CompareTo(planet1.StarDistance));
+
+            for (int day = 1; day <= days; day++)
+            {
+                weatherList.Add(GetWeather(day, ref maxPerimeter, ref maxRainDay, nFractionalDigits));
+            }
+
+            SetMaxRain(weatherList, maxRainDay);
 
             return weatherList;
         }

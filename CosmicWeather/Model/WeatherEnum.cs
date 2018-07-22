@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CosmicWeather.Model
+﻿namespace CosmicWeather.Model
 {
     public enum WeatherEnum
     {
@@ -12,6 +6,6 @@ namespace CosmicWeather.Model
         Optimum,
         Rain,
         MaxRain,
-        Normal //When weather isn't rain, isn't drought and isn't optimum weather either
+        Normal //When weather isn't rain, isn't drought and it isn't optimum either
     }
 }

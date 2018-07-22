@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Drawing;
 using CosmicWeather.Helpers;
 
 namespace CosmicWeather.Model
@@ -25,8 +24,10 @@ namespace CosmicWeather.Model
 
         public CoordinatesHelper CurrentCoordinates(int day, int nFractionalDigits)
         {
+            //Calculate current angle
             double angle = ((AngularSpeed * day) % Turn) * Math.PI / Pi;
 
+            //Calculate current position (x,y)
             var y = Math.Round(Math.Sin(angle) * StarDistance, nFractionalDigits);
             var x = Math.Round(Math.Cos(angle) * StarDistance, nFractionalDigits);
 
@@ -35,8 +36,10 @@ namespace CosmicWeather.Model
 
         public CoordinatesHelper CurrentCoordinates(int day)
         {
+            //Calculate current angle
             double angle = ((AngularSpeed * day) % Turn) * Math.PI / Pi;
 
+            //Calculate current position (x,y)
             var y = Math.Sin(angle) * StarDistance;
             var x = Math.Cos(angle) * StarDistance;
 

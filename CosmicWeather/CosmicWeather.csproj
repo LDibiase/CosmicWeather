@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Database\CosmicWeatherDbContext.cs" />
     <Compile Include="Helpers\CoordinatesHelper.cs" />
+    <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Migrations\201807212204466_CreateWeatherTable.cs" />
     <Compile Include="Migrations\201807212204466_CreateWeatherTable.Designer.cs">
       <DependentUpon>201807212204466_CreateWeatherTable.cs</DependentUpon>
