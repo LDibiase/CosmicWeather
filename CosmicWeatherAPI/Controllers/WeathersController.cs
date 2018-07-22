@@ -25,6 +25,7 @@ namespace CosmicWeatherAPI.Controllers
 
 
         // GET: api/Weathers
+        [ResponseType(typeof(WeatherDto))]
         public IQueryable<WeatherDto> GetWeathers()
         {
             return db.Weathers.Select(AsWeatherDto);

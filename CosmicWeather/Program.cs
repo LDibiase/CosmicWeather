@@ -8,14 +8,18 @@ namespace CosmicWeather
     public class Program
     {
         private static readonly int _nDaysPerYear = 365;
+        private static int _amountYears;
+        private static int _precision = -1;
 
         static void Main(string[] args)
         {
             if (args != null)
             {
+                _amountYears = Convert.ToInt32(args[0]);
 
+                if (args.Length > 1)
+                    _precision = Convert.ToInt32(args[1]);
             }
-
 
             //Data set creation
             //Assume each planet initial angle is 0 (planets are aligned)
@@ -30,18 +34,14 @@ namespace CosmicWeather
                 Planets = new List<Planet> { ferengi, betasoide, vulcano }
             };
 
-            #region Test
-            //int i = 10;
-            //List<Weather> testList1 = new List<Weather>(solarSystem.GetWeatherForXDays(10 * _nDaysPerYear, i));
-            //List<Weather> testList2 = new List<Weather>(solarSystem.GetWeatherForXDays(10 * _nDaysPerYear));
-            #endregion
-
             //Persist results (USUALLY IN ANOTHER COMPONENT, BUT IS A TEST APP)
             using (CosmicWeatherDbContext db = new CosmicWeatherDbContext())
             {
-                //TODO the number of days should come as an execution parameter
-                solarSystem.GetWeatherForXDays(10 * _nDaysPerYear).ForEach(x => db.Weathers.Add(x));
-                //solarSystem.GetWeatherForXDays(10 * _nDaysPerYear, i).ForEach(x => db.Weathers.Add(x));
+                if(_precision >= 0)
+                    solarSystem.GetWeatherForXDays(_amountYears * _nDaysPerYear, _precision).ForEach(x => db.Weathers.Add(x));
+                else
+                    solarSystem.GetWeatherForXDays(_amountYears * _nDaysPerYear).ForEach(x => db.Weathers.Add(x));
+
                 db.SaveChanges();
             }
         }
