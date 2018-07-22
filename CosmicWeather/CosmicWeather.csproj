@@ -57,6 +57,10 @@
     <Compile Include="Migrations\201807212204466_CreateWeatherTable.Designer.cs">
       <DependentUpon>201807212204466_CreateWeatherTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807222255109_CreateWeatherPeriodsTable.cs" />
+    <Compile Include="Migrations\201807222255109_CreateWeatherPeriodsTable.Designer.cs">
+      <DependentUpon>201807222255109_CreateWeatherPeriodsTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Planet.cs" />
     <Compile Include="Model\StarSystem.cs" />
@@ -73,6 +77,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201807212204466_CreateWeatherTable.resx">
       <DependentUpon>201807212204466_CreateWeatherTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807222255109_CreateWeatherPeriodsTable.resx">
+      <DependentUpon>201807222255109_CreateWeatherPeriodsTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

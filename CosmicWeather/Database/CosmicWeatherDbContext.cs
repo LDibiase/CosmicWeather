@@ -9,5 +9,6 @@ namespace CosmicWeather.Database
         {
         }
         public virtual DbSet<Weather> Weathers { get; set; }
+        public virtual DbSet<WeatherPeriod> WeatherPeriods { get; set; }
     }
 }
