@@ -8,12 +8,12 @@ namespace CosmicWeather
     public class Program
     {
         private static readonly int _nDaysPerYear = 365;
-        private static int _amountYears = 0; //Number of years
-        private static int _precision = -1; //Number of fractional digits to be used in the calculations
+        private static int _amountYears = 10; //Number of years
+        private static int _precision = 4; //Number of fractional digits to be used in the calculations
 
         static void Main(string[] args)
         {
-            if (args != null)
+            if (args.Length > 0)
             {
                 _amountYears = Convert.ToInt32(args[0]);
 
@@ -45,6 +45,7 @@ namespace CosmicWeather
             using (CosmicWeatherDbContext db = new CosmicWeatherDbContext())
             {
                 db.Weathers.AddRange(solarSystem.WeatherList);
+                db.WeatherPeriods.AddRange(solarSystem.WeatherPeriods);
                 db.SaveChanges();
             }
         }
