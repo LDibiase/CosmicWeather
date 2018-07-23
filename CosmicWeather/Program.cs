@@ -8,8 +8,8 @@ namespace CosmicWeather
     public class Program
     {
         private static readonly int _nDaysPerYear = 365;
-        private static int _amountYears;
-        private static int _precision = -1;
+        private static int _amountYears = 0; //Number of years
+        private static int _precision = -1; //Number of fractional digits to be used in the calculations
 
         static void Main(string[] args)
         {
@@ -31,17 +31,20 @@ namespace CosmicWeather
             StarSystem solarSystem = new StarSystem
             {
                 Name = "Solar System",
-                Planets = new List<Planet> { ferengi, betasoide, vulcano }
+                Planets = new List<Planet> { ferengi, betasoide, vulcano },
+                WeatherList = new List<Weather>(),
+                WeatherPeriods = new List<WeatherPeriod>()
             };
 
-            //Persist results (USUALLY IN ANOTHER COMPONENT, BUT IS A TEST APP)
+            if(_precision >= 0)
+                solarSystem.SetWeatherForXDays(_amountYears * _nDaysPerYear, _precision);
+            else
+                solarSystem.SetWeatherForXDays(_amountYears * _nDaysPerYear);
+
+            //Persist results(USUALLY IN ANOTHER COMPONENT, BUT IS A TEST APP)
             using (CosmicWeatherDbContext db = new CosmicWeatherDbContext())
             {
-                if(_precision >= 0)
-                    solarSystem.GetWeatherForXDays(_amountYears * _nDaysPerYear, _precision).ForEach(x => db.Weathers.Add(x));
-                else
-                    solarSystem.GetWeatherForXDays(_amountYears * _nDaysPerYear).ForEach(x => db.Weathers.Add(x));
-
+                db.Weathers.AddRange(solarSystem.WeatherList);
                 db.SaveChanges();
             }
         }

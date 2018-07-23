@@ -11,16 +11,32 @@ namespace CosmicWeather.Model
     {
         private static readonly CoordinatesHelper Star = new CoordinatesHelper { PositionX = 0, PositionY = 0 }; //Sun
         private static readonly MathHelper Math = new MathHelper(); //Math calculations helper
-
+        
         #region Properties
 
         [StringLength(50)] public string Name { get; set; }
 
         public List<Planet> Planets { get; set; }
 
+        public List<Weather> WeatherList { get; set; }
+
+        public List<WeatherPeriod> WeatherPeriods { get; set; }
+        
         #endregion
 
         #region Methods
+
+        private WeatherEnum AddWeatherPeriod(WeatherEnum weatherType)
+        {
+            WeatherPeriod weatherPeriod = WeatherPeriods.Find(period => period.WeatherType == weatherType);
+
+            if (weatherPeriod != null)
+                weatherPeriod.AmountPeriods++;
+            else
+                WeatherPeriods.Add(new WeatherPeriod { WeatherType = weatherType, AmountPeriods = 1 });
+
+            return weatherType;
+        }
 
         private bool IsDrought(List<CoordinatesHelper> coordinates)
         {
@@ -133,44 +149,46 @@ namespace CosmicWeather.Model
             maxRain.WeatherType = WeatherEnum.MaxRain;
         }
 
-        public List<Weather> GetWeatherForXDays(int days)
+        public void SetWeatherForXDays(int days)
         {
             double maxPerimeter = 0.0; //Maximum perimeter
             int maxRainDay = -1; //Day of maximum rain
-
-            List<Weather> weatherList = new List<Weather>();
+            WeatherEnum lastWeatherType = 0; //Last weather type
 
             //Sort planets by distance to star in descending order
             Planets.Sort((planet1,planet2) => planet2.StarDistance.CompareTo(planet1.StarDistance));
 
             for (int day = 1; day <= days; day++)
             {
-                weatherList.Add(GetWeather(day, ref maxPerimeter, ref maxRainDay));
+                Weather weather = GetWeather(day, ref maxPerimeter, ref maxRainDay);
+                WeatherList.Add(weather);
+
+                if (weather.WeatherType != lastWeatherType)
+                    lastWeatherType = AddWeatherPeriod(weather.WeatherType); //Set new weather type as last weather type
             }
 
-            SetMaxRain(weatherList, maxRainDay);
-
-            return weatherList;
+            SetMaxRain(WeatherList, maxRainDay);
         }
 
-        public List<Weather> GetWeatherForXDays(int days, int nFractionalDigits)
+        public void SetWeatherForXDays(int days, int nFractionalDigits)
         {
             double maxPerimeter = 0.0; //Maximum perimeter
             int maxRainDay = -1; //Day of maximum rain
-
-            List<Weather> weatherList = new List<Weather>();
+            WeatherEnum lastWeatherType = 0; //Last weather type
 
             //Sort planets by distance to star in descending order
             Planets.Sort((planet1, planet2) => planet2.StarDistance.CompareTo(planet1.StarDistance));
 
             for (int day = 1; day <= days; day++)
             {
-                weatherList.Add(GetWeather(day, ref maxPerimeter, ref maxRainDay, nFractionalDigits));
+                Weather weather = GetWeather(day, ref maxPerimeter, ref maxRainDay, nFractionalDigits);
+                WeatherList.Add(weather);
+
+                if (weather.WeatherType != lastWeatherType)
+                    lastWeatherType = AddWeatherPeriod(weather.WeatherType); //Set new weather type as last weather type
             }
 
-            SetMaxRain(weatherList, maxRainDay);
-
-            return weatherList;
+            SetMaxRain(WeatherList, maxRainDay);
         }
 
         #endregion
