@@ -94,9 +94,9 @@ namespace CosmicWeather.Model
             Planets.ForEach(planet => coordinates.Add(planet.CurrentCoordinates(day)));
 
             if (IsDrought(coordinates))
-                return new Weather { DayNumber = day, WeatherType = WeatherEnum.Drought };
+                return new Weather { DayNumber = day, WeatherType = WeatherEnum.sequia };
             if (IsOptimum(coordinates))
-                return new Weather { DayNumber = day, WeatherType = WeatherEnum.Optimum };
+                return new Weather { DayNumber = day, WeatherType = WeatherEnum.optimo };
             if (IsRain(coordinates))
             {
                 double perimeter = Math.Perimeter(coordinates[0], coordinates[1], coordinates[2]);
@@ -107,10 +107,10 @@ namespace CosmicWeather.Model
                     maxRainDay = day;
                 }
 
-                return new Weather {DayNumber = day, WeatherType = WeatherEnum.Rain};
+                return new Weather {DayNumber = day, WeatherType = WeatherEnum.lluvia};
             }
 
-            return new Weather { DayNumber = day, WeatherType = WeatherEnum.Normal };
+            return new Weather { DayNumber = day, WeatherType = WeatherEnum.normal };
         }
 
         private Weather GetWeather(int day, ref double maxPerimeter, ref int maxRainDay, int nFractionalDigits)
@@ -121,9 +121,9 @@ namespace CosmicWeather.Model
             Planets.ForEach(planet => coordinates.Add(planet.CurrentCoordinates(day, nFractionalDigits)));
 
             if (IsDrought(coordinates, nFractionalDigits))
-                return new Weather { DayNumber = day, WeatherType = WeatherEnum.Drought };
+                return new Weather { DayNumber = day, WeatherType = WeatherEnum.sequia };
             if (IsOptimum(coordinates, nFractionalDigits))
-                return new Weather { DayNumber = day, WeatherType = WeatherEnum.Optimum };
+                return new Weather { DayNumber = day, WeatherType = WeatherEnum.optimo };
             if (IsRain(coordinates))
             {
                 double perimeter = Math.Perimeter(coordinates[0], coordinates[1], coordinates[2]);
@@ -134,10 +134,10 @@ namespace CosmicWeather.Model
                     maxRainDay = day;
                 }
 
-                return new Weather { DayNumber = day, WeatherType = WeatherEnum.Rain };
+                return new Weather { DayNumber = day, WeatherType = WeatherEnum.lluvia };
             }
 
-            return new Weather { DayNumber = day, WeatherType = WeatherEnum.Normal };
+            return new Weather { DayNumber = day, WeatherType = WeatherEnum.normal };
         }
 
         private void SetMaxRain(List<Weather> weatherList, int maxRainDay)
@@ -146,7 +146,7 @@ namespace CosmicWeather.Model
             Weather maxRain = weatherList.Find(weather => weather.DayNumber == maxRainDay);
 
             //Update weather type
-            maxRain.WeatherType = WeatherEnum.MaxRain;
+            maxRain.WeatherType = WeatherEnum.lluviaMaxima;
         }
 
         public void SetWeatherForXDays(int days)
